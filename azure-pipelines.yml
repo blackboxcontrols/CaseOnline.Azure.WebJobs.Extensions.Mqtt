@@ -1,7 +1,8 @@
 name: 1.0$(rev:.r)
 
-# trigger:
-# - master
+trigger:
+- master
+- main
 
 pool:
   vmImage: 'windows-latest'
