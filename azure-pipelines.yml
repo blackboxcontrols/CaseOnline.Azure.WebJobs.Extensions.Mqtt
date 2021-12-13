@@ -7,7 +7,6 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  group: variables-devops
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
@@ -22,7 +21,7 @@ steps:
       command: 'restore'
       projects: '**/**/*.csproj'
       feedsToUse: 'select'
-      vstsFeed: '$(vstsFeed)'
+      vstsFeed: 'b7d61f3a-9980-4d94-9da0-4212e284af1e/6f4c9b99-2d4f-4e78-b856-ca91f47b70ed'
 
   - task: DotNetCoreCLI@2
     displayName: 'Building the assemblies'
@@ -53,4 +52,4 @@ steps:
       command: 'push'
       packagesToPush: 'dist/*.nupkg'
       nuGetFeedType: 'internal'
-      vstsFeed: '$(vstsFeed)'
+      vstsFeed: 'b7d61f3a-9980-4d94-9da0-4212e284af1e/6f4c9b99-2d4f-4e78-b856-ca91f47b70ed'
