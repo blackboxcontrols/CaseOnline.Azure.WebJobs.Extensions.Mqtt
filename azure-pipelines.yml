@@ -11,45 +11,53 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
-  - checkout: self
-    path: src
+stages:
+- stage: PublishPackage
+  displayName: Test and publish package
+  variables:
+  - group: variables-devops
+  jobs:
+  - job:
+    displayName: Test and publish package
+    steps:
+    - checkout: self
+      path: s
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Restoring packages'
-    inputs:
-      command: 'restore'
-      projects: '**/**/*.csproj'
-      feedsToUse: 'select'
-      vstsFeed: 'b7d61f3a-9980-4d94-9da0-4212e284af1e/6f4c9b99-2d4f-4e78-b856-ca91f47b70ed'
+    - task: DotNetCoreCLI@2
+      displayName: 'Restoring packages'
+      inputs:
+        command: 'restore'
+        projects: '**/**/*.csproj'
+        feedsToUse: 'select'
+        vstsFeed: '$(vstsFeed)'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Building the assemblies'
-    inputs:
-      command: 'build'
-      projects: '**/**/*.csproj'
-      versioningScheme: 'byBuildNumber'
-      arguments: '--configuration $(BuildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Building the assemblies'
+      inputs:
+        command: 'build'
+        projects: '**/**/*.csproj'
+        versioningScheme: 'byBuildNumber'
+        arguments: '--configuration $(BuildConfiguration)'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Testing the assemblies'
-    inputs:
-      command: 'test'
-      projects: '**/**/CaseOnline.Azure.WebJobs.Extensions.Mqtt.Tests.csproj'
+    - task: DotNetCoreCLI@2
+      displayName: 'Testing the assemblies'
+      inputs:
+        command: 'test'
+        projects: '**/**/CaseOnline.Azure.WebJobs.Extensions.Mqtt.Tests.csproj'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Creating the package'
-    inputs:
-      command: 'pack'
-      packagesToPack: '**/**/*.csproj'
-      packDirectory: 'dist'
-      nobuild: true
-      versioningScheme: 'byBuildNumber'
+    - task: DotNetCoreCLI@2
+      displayName: 'Creating the package'
+      inputs:
+        command: 'pack'
+        packagesToPack: '**/**/*.csproj'
+        packDirectory: 'dist'
+        nobuild: true
+        versioningScheme: 'byBuildNumber'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Staging the package'
-    inputs:
-      command: 'push'
-      packagesToPush: 'dist/*.nupkg'
-      nuGetFeedType: 'internal'
-      vstsFeed: 'b7d61f3a-9980-4d94-9da0-4212e284af1e/6f4c9b99-2d4f-4e78-b856-ca91f47b70ed'
+    - task: DotNetCoreCLI@2
+      displayName: 'Staging the package'
+      inputs:
+        command: 'push'
+        packagesToPush: 'dist/*.nupkg'
+        nuGetFeedType: 'internal'
+        vstsFeed: '$(vstsFeed)'
