@@ -60,4 +60,4 @@ stages:
         command: 'push'
         packagesToPush: 'dist/*.nupkg'
         nuGetFeedType: 'internal'
-        vstsFeed: '$(vstsFeed)'
+        publishVstsFeed: '$(vstsFeed)'
