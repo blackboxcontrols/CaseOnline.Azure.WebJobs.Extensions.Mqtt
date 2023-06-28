@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners
+﻿namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners
 {
     public interface IProcesMqttMessage
     {

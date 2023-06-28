@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners;
+﻿using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners;
 using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Messaging;
 using Microsoft.Azure.WebJobs;
 using MQTTnet;
@@ -47,7 +44,7 @@ namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Config
             await _mqttConnection.PublishAsync(mqttApplicationMessage).ConfigureAwait(false);
         }
 
-        public Task FlushAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task FlushAsync(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }

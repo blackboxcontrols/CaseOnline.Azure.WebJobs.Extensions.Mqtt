@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Bindings;
 using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners;
 using Microsoft.Azure.WebJobs.Logging;
@@ -15,7 +12,7 @@ namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Config
         private readonly IManagedMqttClientFactory _mqttFactory;
         private readonly IMqttConfigurationParser _mqttConfigurationParser;
 
-        private readonly ConcurrentDictionary<string, MqttConnectionEntry> _mqttConnections = new ConcurrentDictionary<string, MqttConnectionEntry>();
+        private readonly ConcurrentDictionary<string, MqttConnectionEntry> _mqttConnections = new();
 
         public MqttConnectionFactory(ILoggerFactory loggerFactory, IManagedMqttClientFactory mqttFactory, IMqttConfigurationParser mqttConfigurationParser)
         {

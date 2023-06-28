@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners;
 using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Messaging;
 using Microsoft.Azure.WebJobs.Host.Bindings;

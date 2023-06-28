@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Config;
+﻿using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Config;
 using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Messaging;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
@@ -19,7 +17,7 @@ namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners
         private readonly IManagedMqttClientFactory _mqttClientFactory;
         private readonly MqttConfiguration _config;
         private readonly ILogger _logger;
-        private readonly object startupLock = new object();
+        private readonly object _startupLock = new();
         private IManagedMqttClient _managedMqttClient;
         private IProcesMqttMessage _messageHandler;
 
@@ -40,7 +38,7 @@ namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners
         /// </summary> ;
         public override string ToString()
         {
-            return $"Connection for config: {_config.ToString()}, currently connected: {ConnectionState}";
+            return $"Connection for config: {_config}, currently connected: {ConnectionState}";
         }
 
         /// <summary>
@@ -50,7 +48,7 @@ namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners
         {
             try
             {
-                lock (startupLock)
+                lock (_startupLock)
                 {
                     if (_managedMqttClient != null || ConnectionState == ConnectionState.Connected)
                     {

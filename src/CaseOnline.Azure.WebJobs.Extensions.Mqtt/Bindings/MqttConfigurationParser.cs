@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-#if DEBUG                
+﻿#if DEBUG                
 using System.Net.Security;
 #endif
 using System.Security.Cryptography.X509Certificates;
@@ -62,7 +60,7 @@ namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Bindings
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 connectionString = _nameResolver.Resolve(DefaultAppsettingsKeyForConnectionString);
-                name = name ?? DefaultAppsettingsKeyForConnectionString;
+                name ??= DefaultAppsettingsKeyForConnectionString;
             }
             var mqttConnectionString = new MqttConnectionString(connectionString, name);
 
@@ -93,10 +91,8 @@ namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Bindings
                 var certificates = new List<X509Certificate2>();
                 if (connectionString.Certificate != null)
                 {
-                    using (var cert = new X509Certificate2(connectionString.Certificate))
-                    {
-                        certificates.Add(cert);
-                    }
+                    using var cert = new X509Certificate2(connectionString.Certificate);
+                    certificates.Add(cert);
                 }
 
                 mqttClientOptionsBuilder = mqttClientOptionsBuilder.WithTls(new MqttClientOptionsBuilderTlsParameters

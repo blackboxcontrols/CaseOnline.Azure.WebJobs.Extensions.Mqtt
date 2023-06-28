@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using MQTTnet;
+﻿using MQTTnet;
 
 namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners
 {

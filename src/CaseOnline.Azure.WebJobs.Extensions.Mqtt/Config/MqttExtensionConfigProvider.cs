@@ -1,5 +1,4 @@
-﻿using System;
-using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Bindings;
+﻿using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Bindings;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Description;
 using Microsoft.Azure.WebJobs.Host.Config;
