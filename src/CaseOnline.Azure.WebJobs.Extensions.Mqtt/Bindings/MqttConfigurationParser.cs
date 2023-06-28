@@ -55,12 +55,12 @@ public class MqttConfigurationParser : IMqttConfigurationParser
         var name = mqttAttribute.ConnectionString;
         var connectionString = _nameResolver.Resolve(mqttAttribute.ConnectionString);
 
-            if (string.IsNullOrWhiteSpace(connectionString))
-            {
-                connectionString = _nameResolver.Resolve(DefaultAppsettingsKeyForConnectionString);
-                name ??= DefaultAppsettingsKeyForConnectionString;
-            }
-            var mqttConnectionString = new MqttConnectionString(connectionString, name);
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            connectionString = _nameResolver.Resolve(DefaultAppsettingsKeyForConnectionString);
+            name ??= DefaultAppsettingsKeyForConnectionString;
+        }
+        var mqttConnectionString = new MqttConnectionString(connectionString, name);
 
         var mqttClientOptions = GetMqttClientOptions(mqttConnectionString);
 
@@ -84,14 +84,14 @@ public class MqttConfigurationParser : IMqttConfigurationParser
             mqttClientOptionsBuilder = mqttClientOptionsBuilder.WithCredentials(connectionString.Username, connectionString.Password);
         }
 
-            if (connectionString.Tls)
+        if (connectionString.Tls)
+        {
+            var certificates = new List<X509Certificate2>();
+            if (connectionString.Certificate != null)
             {
-                var certificates = new List<X509Certificate2>();
-                if (connectionString.Certificate != null)
-                {
-                    using var cert = new X509Certificate2(connectionString.Certificate);
-                    certificates.Add(cert);
-                }
+                using var cert = new X509Certificate2(connectionString.Certificate);
+                certificates.Add(cert);
+            }
 
             mqttClientOptionsBuilder = mqttClientOptionsBuilder.WithTls(new MqttClientOptionsBuilderTlsParameters
             {

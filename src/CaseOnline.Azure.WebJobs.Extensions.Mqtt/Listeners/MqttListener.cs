@@ -42,6 +42,7 @@ public sealed class MqttListener : IListener, IProcesMqttMessage
         {
             return;
         }
+
         await _mqttConnection.StartAsync(this).ConfigureAwait(false);
 
         await _mqttConnection.SubscribeAsync(_topics).ConfigureAwait(false);
@@ -50,7 +51,7 @@ public sealed class MqttListener : IListener, IProcesMqttMessage
     public async Task OnMessage(MqttMessageReceivedEventArgs arg)
     {
         var token = _cancellationTokenSource.Token;
-           
+
         var triggeredFunctionData = new TriggeredFunctionData
         {
             TriggerValue = arg?.Message ?? throw new ArgumentNullException(nameof(arg))
@@ -65,6 +66,7 @@ public sealed class MqttListener : IListener, IProcesMqttMessage
                 {
                     _logger.LogCritical("Error firing function: {Exception}", result.Exception);
                 }
+
                 token.ThrowIfCancellationRequested();
             }
         }
@@ -84,7 +86,7 @@ public sealed class MqttListener : IListener, IProcesMqttMessage
 
         _cancellationTokenSource.Cancel();
 
-        await _mqttConnection.UnubscribeAsync(_topics.Select(x => x.Topic).ToArray()).ConfigureAwait(false);
+        await _mqttConnection.UnsubscribeAsync(_topics.Select(x => x.Topic).ToArray()).ConfigureAwait(false);
 
         await _mqttConnection.StopAsync().ConfigureAwait(false);
     }

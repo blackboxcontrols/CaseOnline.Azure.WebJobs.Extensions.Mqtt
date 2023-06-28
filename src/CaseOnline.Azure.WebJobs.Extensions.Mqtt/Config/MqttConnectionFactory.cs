@@ -11,7 +11,7 @@ public class MqttConnectionFactory : IMqttConnectionFactory
     private readonly IManagedMqttClientFactory _mqttFactory;
     private readonly IMqttConfigurationParser _mqttConfigurationParser;
 
-        private readonly ConcurrentDictionary<string, MqttConnectionEntry> _mqttConnections = new();
+    private readonly ConcurrentDictionary<string, MqttConnectionEntry> _mqttConnections = new();
 
     public MqttConnectionFactory(ILoggerFactory loggerFactory, IManagedMqttClientFactory mqttFactory, IMqttConfigurationParser mqttConfigurationParser)
     {

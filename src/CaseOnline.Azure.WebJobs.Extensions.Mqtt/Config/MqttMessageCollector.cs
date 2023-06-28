@@ -21,17 +21,20 @@ public class MqttMessageCollector : IAsyncCollector<IMqttMessage>
 
         if (_mqttConnection.ConnectionState != ConnectionState.Connected)
         {
-            IProcesMqttMessage messageProcessor = null; // this is only for publishing, we don't expect incoming messages
+            IProcesMqttMessage
+                messageProcessor = null; // this is only for publishing, we don't expect incoming messages
             await _mqttConnection.StartAsync(messageProcessor).ConfigureAwait(false);
             for (var i = 0; i < 100; i++)
             {
                 if (_mqttConnection.ConnectionState != ConnectionState.Connected)
                 {
                     await Task.Delay(50, cancellationToken).ConfigureAwait(false);
-                } 
+                }
             }
         }
-        var qos = (MQTTnet.Protocol.MqttQualityOfServiceLevel)Enum.Parse(typeof(MQTTnet.Protocol.MqttQualityOfServiceLevel), item.QosLevel.ToString());
+
+        var qos = (MQTTnet.Protocol.MqttQualityOfServiceLevel)Enum.Parse(
+            typeof(MQTTnet.Protocol.MqttQualityOfServiceLevel), item.QosLevel.ToString());
         var mqttApplicationMessage = new MqttApplicationMessage
         {
             Topic = item.Topic,
@@ -42,9 +45,8 @@ public class MqttMessageCollector : IAsyncCollector<IMqttMessage>
         await _mqttConnection.PublishAsync(mqttApplicationMessage).ConfigureAwait(false);
     }
 
-        public Task FlushAsync(CancellationToken cancellationToken = default)
-        {
-            return Task.CompletedTask;
-        }
+    public Task FlushAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
     }
 }

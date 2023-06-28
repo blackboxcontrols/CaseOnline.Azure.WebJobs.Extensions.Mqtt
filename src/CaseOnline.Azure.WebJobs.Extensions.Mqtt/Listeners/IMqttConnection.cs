@@ -12,5 +12,5 @@ public interface IMqttConnection : IDisposable
 
     Task SubscribeAsync(MqttTopicFilter[] topics);
 
-    Task UnubscribeAsync(string[] topics);
+    Task UnsubscribeAsync(string[] topics);
 }
