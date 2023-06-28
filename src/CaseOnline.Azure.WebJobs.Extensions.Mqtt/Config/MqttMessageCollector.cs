@@ -42,8 +42,9 @@ public class MqttMessageCollector : IAsyncCollector<IMqttMessage>
         await _mqttConnection.PublishAsync(mqttApplicationMessage).ConfigureAwait(false);
     }
 
-    public Task FlushAsync(CancellationToken cancellationToken = default(CancellationToken))
-    {
-        return Task.CompletedTask;
+        public Task FlushAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

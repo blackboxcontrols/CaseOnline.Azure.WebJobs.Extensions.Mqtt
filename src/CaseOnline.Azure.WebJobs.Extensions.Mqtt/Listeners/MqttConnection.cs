@@ -5,19 +5,19 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Receiving;
 using MQTTnet.Extensions.ManagedClient;
 
-namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners;
-
-/// <summary>
-/// Manages the state of the MQTT connection, an wrapper around MQTTNet.IManagedMqttClient. 
-/// </summary>
-public class MqttConnection : IMqttConnection, IMqttApplicationMessageReceivedHandler, IApplicationMessageProcessedHandler, IMqttClientConnectedHandler, IMqttClientDisconnectedHandler, IConnectingFailedHandler, ISynchronizingSubscriptionsFailedHandler
+namespace CaseOnline.Azure.WebJobs.Extensions.Mqtt.Listeners
 {
-    private readonly IManagedMqttClientFactory _mqttClientFactory;
-    private readonly MqttConfiguration _config;
-    private readonly ILogger _logger;
-    private readonly object startupLock = new object();
-    private IManagedMqttClient _managedMqttClient;
-    private IProcesMqttMessage _messageHandler;
+    /// <summary>
+    /// Manages the state of the MQTT connection, an wrapper around MQTTNet.IManagedMqttClient. 
+    /// </summary>
+    public class MqttConnection : IMqttConnection, IMqttApplicationMessageReceivedHandler, IApplicationMessageProcessedHandler, IMqttClientConnectedHandler, IMqttClientDisconnectedHandler, IConnectingFailedHandler, ISynchronizingSubscriptionsFailedHandler
+    {
+        private readonly IManagedMqttClientFactory _mqttClientFactory;
+        private readonly MqttConfiguration _config;
+        private readonly ILogger _logger;
+        private readonly object _startupLock = new();
+        private IManagedMqttClient _managedMqttClient;
+        private IProcesMqttMessage _messageHandler;
 
     public MqttConnection(IManagedMqttClientFactory mqttClientFactory, MqttConfiguration config, ILogger logger)
     {
@@ -31,28 +31,28 @@ public class MqttConnection : IMqttConnection, IMqttApplicationMessageReceivedHa
     /// </summary>
     public ConnectionState ConnectionState { get; private set; }
 
-    /// <summary>
-    /// Gets the descriptor for this Connection.
-    /// </summary> ;
-    public override string ToString()
-    {
-        return $"Connection for config: {_config.ToString()}, currently connected: {ConnectionState}";
-    }
-
-    /// <summary>
-    /// Opens the MQTT connection.
-    /// </summary>
-    public async Task StartAsync(IProcesMqttMessage messageHandler)
-    {
-        try
+        /// <summary>
+        /// Gets the descriptor for this Connection.
+        /// </summary> ;
+        public override string ToString()
         {
-            lock (startupLock)
+            return $"Connection for config: {_config}, currently connected: {ConnectionState}";
+        }
+
+        /// <summary>
+        /// Opens the MQTT connection.
+        /// </summary>
+        public async Task StartAsync(IProcesMqttMessage messageHandler)
+        {
+            try
             {
-                if (_managedMqttClient != null || ConnectionState == ConnectionState.Connected)
+                lock (_startupLock)
                 {
-                    return;
-                }
-                _messageHandler = messageHandler;
+                    if (_managedMqttClient != null || ConnectionState == ConnectionState.Connected)
+                    {
+                        return;
+                    }
+                    _messageHandler = messageHandler;
 
                 ConnectionState = ConnectionState.Connecting;
                 _managedMqttClient = _mqttClientFactory.CreateManagedMqttClient();

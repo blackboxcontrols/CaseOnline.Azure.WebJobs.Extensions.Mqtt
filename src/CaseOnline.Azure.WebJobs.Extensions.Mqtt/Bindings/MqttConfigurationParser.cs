@@ -1,4 +1,7 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿#if DEBUG                
+using System.Net.Security;
+#endif
+using System.Security.Cryptography.X509Certificates;
 using CaseOnline.Azure.WebJobs.Extensions.Mqtt.Config;
 using Microsoft.Azure.WebJobs.Logging;
 using MQTTnet.Client.Options;
@@ -52,12 +55,12 @@ public class MqttConfigurationParser : IMqttConfigurationParser
         var name = mqttAttribute.ConnectionString;
         var connectionString = _nameResolver.Resolve(mqttAttribute.ConnectionString);
 
-        if (string.IsNullOrWhiteSpace(connectionString))
-        {
-            connectionString = _nameResolver.Resolve(DefaultAppsettingsKeyForConnectionString);
-            name = name ?? DefaultAppsettingsKeyForConnectionString;
-        }
-        var mqttConnectionString = new MqttConnectionString(connectionString, name);
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                connectionString = _nameResolver.Resolve(DefaultAppsettingsKeyForConnectionString);
+                name ??= DefaultAppsettingsKeyForConnectionString;
+            }
+            var mqttConnectionString = new MqttConnectionString(connectionString, name);
 
         var mqttClientOptions = GetMqttClientOptions(mqttConnectionString);
 
@@ -81,13 +84,14 @@ public class MqttConfigurationParser : IMqttConfigurationParser
             mqttClientOptionsBuilder = mqttClientOptionsBuilder.WithCredentials(connectionString.Username, connectionString.Password);
         }
 
-        if (connectionString.Tls)
-        {
-            var certificates = new List<X509Certificate2>();
-            using (var cert = new X509Certificate2(connectionString.Certificate))
+            if (connectionString.Tls)
             {
-                certificates.Add(cert);
-            }
+                var certificates = new List<X509Certificate2>();
+                if (connectionString.Certificate != null)
+                {
+                    using var cert = new X509Certificate2(connectionString.Certificate);
+                    certificates.Add(cert);
+                }
 
             mqttClientOptionsBuilder = mqttClientOptionsBuilder.WithTls(new MqttClientOptionsBuilderTlsParameters
             {
